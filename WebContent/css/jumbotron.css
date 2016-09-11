@@ -1,0 +1,43 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-bottom: 2rem;
+}
+
+
+main{
+	padding-top: 70px
+}
+footer p{
+	height:20%;
+	font-size: small;
+	text-align: center;
+	background-color: #5689c0;
+	color: #dce9fc; 
+
+	}
+.display-3 {
+	color: green;
+}
+.jumbotron {
+	background-color:#c9e1fc;
+	
+}
+.form-signin {
+	width: 40%;
+	margin: auto;
+
+}
+nav {
+	background-color: #5689c0;
+	color: #dce9fc;
+	font-size: large;
+
+	}
+	.navbar-brand{
+	color: #dce9fc;
+	font-size: large;
+	}
+.nav-link{
+	color: #dce9fc;
+	font-size: large;
+}

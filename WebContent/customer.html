@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>EKL_PRO</title>
+
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/angular.js"></script>
+<script src="js/angular-route.js"></script>
+<script type="text/javascript" src="custController.js"></script>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/jumbotron.css" rel="stylesheet">
+<link href="css/customer.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+</head>
+
+<body ng-app="docust" ng-controller="custController">
+
+	<nav class="navbar navbar-static-top navbar-dark bg-inverse">
+		<a class="navbar-brand" href="#">EKL COUPON SYSTEM </a>
+		<ul class="nav navbar-nav">
+			<li class="nav-item active"><a class="nav-link" href="http://localhost:8080/EKLWS/customer.html"
+				>Home<span class="sr-only">(current)</span></a></li>
+			<li class="nav-item"><a class="nav-link" href="http://localhost:8080/EKLWS/about.html"
+				>About</a></li>
+			<li class="nav-item"><a class="nav-link" href="http://localhost:8080/EKLWS/contact.html"
+				>Contact</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+
+			<li style="margin-right: 20px">
+				<button class="btn btn-info btn-lg" ng-click="LogOut()">Off</button>
+			</li>
+		</ul>
+	</nav>
+	<div class="container">
+
+
+
+		<div class="row" style="min-height: 660px;" ng-show="MainMenu">
+
+			<div class="col-md-3 col-md-3 sidebar">
+				<h2 class="lead">Menu of services:</h2>
+				<br />
+				<!-- 
+		////////////////////////////////////////////////////////
+-->
+				<div id="accordion" role="tablist" aria-multiselectable="true">
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingOne">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion"
+									href="#collapseOne" aria-expanded="true"
+									aria-controls="collapseOne"> Purshase Coupon </a>
+							</h4>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse in"
+							role="tabpanel" aria-labelledby="headingOne">
+							<ul class="nav nav-sidebar">
+
+								<li><a ng-click="getAllCoupons()">Show All </a></li>
+								<li><a ng-click="ShowCouponsByPrice()">ShowByPrice</a></li>
+								<li><a ng-click="ShowCouponsByType()">ShowByType</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingTwo">
+							<h4 class="panel-title">
+								<a class="collapsed" data-toggle="collapse"
+									data-parent="#accordion" href="#collapseTwo"
+									aria-expanded="false" aria-controls="collapseTwo"> My
+									Account </a>
+							</h4>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse"
+							role="tabpanel" aria-labelledby="headingTwo">
+							<ul class="nav nav-sidebar">
+
+								<li><a ng-click="updateMyDetails()">Update Details </a></li>
+								<li><a ng-click="getMyCoupons()">Show My Coupons</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+				<!-- WELCOME PAGE -->
+				<div class="col-md-9" ng-show="WelcomePage">
+					<h1>Welcome , {{customer.custName | uppercase}}!</h1>
+					<br />
+					<h2>make your choice in menu, what to do</h2>
+				</div>
+
+				<!-- SHOW PURSHASED COUPONS -->
+				<div class="col-md-9" ng-show="ShowMyCoupons">
+					<h2>Table of My Coupons</h2>
+					<table class = "table table-hover" border="1" >
+						<thead>
+							<tr>
+								<th id="idHead">Id</th>
+								<th id="titleHead">Title</th>
+								<th id="startDateHead">Start Date</th>
+								<th id="endDateHead">End Date</th>
+								<th id="typeHead">Type</th>
+								<th id="messageHead">Message</th>
+								<th id="priceHead">Price</th>
+								<th id="imageHead">Image</th>
+							</tr>
+						<tbody >
+							<tr
+								ng-repeat="coupon in coupons  |  orderBy:'id'   | filter:searchText" >
+								<td>{{ coupon.id}}</td>
+								<td>{{ coupon.title}}</td>
+								<td>{{ coupon.startDate}}</td>
+								<td>{{ coupon.endDate}}</td>
+								<td>{{ coupon.type}}</td>
+								<td>{{ coupon.message}}</td>
+								<td>{{ coupon.price}}</td>
+								<td><img src="img/{{ coupon.type}}.png" width="40"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+
+
+				<!-- UPDATE CUSTOMER-->
+
+				<div class="col-md-9" ng-show="UpdateCustomer" >
+
+					<h4>{{customer.custName}}, if you want update username or
+						password fill the fields (Password is mandatory):</h4>
+					UserName <input type="text" ng-model="username"></input>
+					* Password<input	type="text" ng-model="password"></input>
+					<button type="button" class="btn btn-primary"
+						ng-click="doUpdate()">UPD</button>
+				</div>
+			<!-- SHOW  COUPONS for Sale-->
+				<div class="col-md-9" ng-show="ShowAllCoupons">
+					<h2>Table of available coupons</h2>
+					<table class = "table table-bordered"  border="1" arrow-selector>
+						<thead>
+							<tr>
+							
+								<th id="idHead">Id</th>
+								<th id="titleHead">Title</th>
+								<th id="startDateHead">Start Date</th>
+								<th id="endDateHead">End Date</th>
+								<th id="amountHead">Amount</th>
+								<th id="typeHead">Type</th>
+								<th id="messageHead">Message</th>
+								<th id="priceHead">Price</th>
+								<th id="imageHead">Image</th>
+							</tr>
+						<tbody>
+							<tr
+								ng-repeat="coupon in coupons " ng-class="{'selected':$index == selectedRow}" ng-click='setClickedRow($index)'>
+								
+								<td>{{ coupon.id}}</td>
+								<td>{{ coupon.title}}</td>
+								<td>{{ coupon.startDate}}</td>
+								<td>{{ coupon.endDate}}</td>
+								<td>{{ coupon.amount}}</td>
+								<td>{{ coupon.type}}</td>
+								<td>{{ coupon.message}}</td>
+								<td>{{ coupon.price}}</td>
+								<td><img src="img/{{ coupon.type}}.png" width="40"></td>
+							</tr>
+						</tbody>
+					</table>
+					<div>
+				
+					
+					<h4>For purchase coupon id {{coupons[selectedRow].id}} click</h4> <br/> 								
+				 <button type="submit" class="btn btn-primary" 	ng-click="purchaseCoupon()">BUY</button>
+					</div>
+				</div>
+				<div class="col-md-9" ng-show = "ChoozeType">
+					<p>
+					<br/>
+							Coupon Type: *<select ng-model="type" ng-options="type for type in couponTypes" >
+							 <option disabled selected value>Select Coupon Type</option>
+							</select>					
+					<br/>
+				
+					</p>
+						<div>
+						<button type="submit" class="btn btn-primary"
+							ng-click="getCouponsByType()">Find Coupons</button>
+					</div>
+				</div>
+				<div class = "col-md-9" ng-show = "ChoozePrice">
+					<p>
+						Price: *<input type="number" step="0.01" min="0.01"
+						ng-model="price" value={{coupon.price}}>
+					</p>
+					<div>
+						<button type="submit" class="btn btn-primary"
+							ng-click="getCouponsByPrice()">Find Coupons</button>
+					</div>
+					
+	
+				</div>
+				<!-- row -->
+			</div>
+
+			<!-- /container -->
+
+		</div>
+		<footer style>
+			<p>&copy; EKL PROJECT 2016</p>
+		</footer>
+
+
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		window.jQuery
+				|| document
+						.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
+	</script>
+
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+		crossorigin="anonymous"></script>
+</body>
+</html>
+

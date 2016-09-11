@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>EKL_PRO</title>
+
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/angular.js"></script>
+<script src="js/angular-route.js"></script>
+<script type="text/javascript" src="admController.js"></script>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/jumbotron.css" rel="stylesheet">
+<link href="css/admin.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+</head>
+
+<body ng-app="doadmin" ng-controller="admController">
+
+	<nav class="navbar navbar-static-top navbar-dark bg-inverse">
+		<a class="navbar-brand" href="#">EKL COUPON SYSTEM </a>
+		<ul class="nav navbar-nav">
+			<li class="nav-item active"><a class="nav-link" href="/EKLWS/admin.html"
+				>Home<span class="sr-only">(current)</span></a></li>
+			<li class="nav-item"><a class="nav-link" href="/EKLWS/about.html"
+				>About</a></li>
+			<li class="nav-item"><a class="nav-link" href="/EKLWS/contact.html"
+				>Contact</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+
+			<li style="margin-right: 20px">
+				<button class="btn btn-info btn-lg" ng-click="LogOut()">Off</button>
+			</li>
+		</ul>
+	</nav>
+	<div class="container" >
+
+		<div class="row" style="min-height: 660px;" ng-show="MainMenu">
+
+			<div class="col-md-3 col-md-3 sidebar">
+				<h2 class="lead">Services for:</h2>
+				<br />
+				<div id="accordion" role="tablist" aria-multiselectable="true">
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingOne">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion"
+									href="#collapseOne" aria-expanded="true"
+									aria-controls="collapseOne">Company </a>
+							</h4>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse in"
+							role="tabpanel" aria-labelledby="headingOne">
+							<ul class="nav nav-sidebar">
+
+								<li><a ng-click="getAllComps()">Show All </a></li>
+								<li><a ng-click="CreateComp()">Add</a></li>
+								<li><a ng-click="FindCompById()">Find by ID</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingTwo">
+							<h4 class="panel-title">
+								<a class="collapsed" data-toggle="collapse"
+									data-parent="#accordion" href="#collapseTwo"
+									aria-expanded="false" aria-controls="collapseTwo">Customer</a>
+							</h4>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse"
+							role="tabpanel" aria-labelledby="headingTwo">
+							<ul class="nav nav-sidebar">
+
+								<li><a ng-click="getAllCusts()">Show All </a></li>
+								<li><a ng-click="CreateCust()">Add</a></li>
+								<li><a ng-click="FindCustById()">Find by ID</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+
+			<!-- WELCOME PAGE -->
+			<div class="col-md-9" ng-show="WelcomePage">
+				<h1>Welcome Admin,</h1>
+				<br />
+				<h2>make your choice in menu, what to do</h2>
+			</div>
+			
+			
+			<!-- SHOW ALL COMPANIES -->
+			<div class="col-md-9" ng-show="ShowAllCustomers">
+				<h2>Table of All Customers</h2>
+				<table id="customers" border="1">
+					<thead>
+						<tr>
+							<th id="idHead">id</th>
+							<th id="nameHead">user name</th>
+
+
+						</tr>
+					<tbody>
+						<tr
+							ng-repeat="customer in customers |  orderBy:'id'" >
+							<td>{{ customer.id}}</td>
+							<td>{{ customer.custName}}</td>
+
+						</tr>
+					</tbody>
+
+
+				</table>
+			</div>
+			<!-- SHOW ALL CUSTOMERS -->
+			<div class="col-md-9" ng-show="ShowAllCompanies">
+				<h2>Table of All Companies</h2>
+				<table id="companies" border="1">
+					<thead>
+						<tr>
+							<th id="idHead">id</th>
+							<th id="nameHead">company name</th>
+							<th id="emailHead">email</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							ng-repeat="company in companies  |  orderBy:'id'"  >
+
+							<td>{{ company.id}}</td>
+							<td>{{ company.compName}}</td>
+							<td>{{ company.email}}</td>
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMP DETAILS-->
+
+			<div class="col-md-9" ng-show="CompanyDetails" >
+				<h2>Input company ID and choose what to do:</h2>
+				<input type="number" ng-model="id" min="1">ID</input>
+				<!--   //////////////////////////////////////////////////   -->
+				<select class="selectClientAction" ng-model="method">
+						<option>ShowDetails</option>
+						<option>Delete</option>
+						<option>Update</option>
+					</select>
+				<button type="button" class="btn btn-primary" ng-click="executeForCompany(method)">Commit</button>
+
+				<div ng-show="ShowCompany" ng-model="company">
+				
+					<h3>Details of company {{company.compName}}</h3>
+					<table border="1">
+						<thead>
+							<tr>
+								<th id="idHead">id</th>
+								<th id="nameHead">company name</th>
+								<th id="emailHead">email</th>
+
+							</tr>
+						<tbody>
+							<tr>
+								<td>{{ company.id}}</td>
+								<td>{{ company.compName}}</td>
+								<td>{{ company.email}}</td>
+
+							</tr>
+						</tbody>
+					</table>
+					<h4>to show coupons click :</h4>
+					<button type="button" class="btn btn-primary"
+						ng-click="showCoupons()">Show Coupons</button>
+					<br /> 
+
+				</div>
+<!--///////////List of Coupons///////////////// -->
+
+				<div ng-show="listCoupons" ng-model="coupons">
+
+					<table border="1">
+						<thead>
+							<tr>
+								<th id="idHead">id</th>
+								<th id="titleHead">title</th>
+								<th id="priceHead">price</th>
+
+							</tr>
+						<tbody>
+							<tr ng-repeat="coupon in coupons">
+								<td>{{ coupon.id}}</td>
+								<td>{{ coupon.title}}</td>
+								<td>{{ coupon.price}}</td>
+
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+
+		</div>
+	
+
+
+			<!-- UPD/DEL COMP-->
+			<div ng-show="UpdateComp">
+				<h2>If you want update company by id {{id}} fill the fields (Password is mandatory):</h2>
+				* Password<input type="text" ng-model="password"></input>
+				Email<input
+					type="email" ng-model="email"></input>
+				<button type="button" class="btn btn-primary"
+					ng-click="updCompany()">UPD</button>
+			</div>
+
+
+			<div ng-show="DeleteComp">
+				<h2>do you want delete company by id {{id}}?</h2>
+				<button type="button" class="btn btn-primary"
+					ng-click="delCompany()">DEL</button>
+			</div>
+			
+			
+			<!--/////////// CUST DETAILS/////////////////-->
+
+			<div class="col-md-9" ng-show="CustomerDetails" ng-model="customer">
+				<h2>Input customer ID and choose what to do:</h2>
+				<input type="number" ng-model="id" min="1">ID</input>
+					<select class="selectClientAction" ng-model="method" >
+						<option>ShowDetails</option>
+						<option>Delete</option>
+						<option>Update</option>
+					</select> 
+				<button type="button" class="btn btn-primary" ng-click="executeForCustomer(method)">Commit</button>
+
+				<div ng-show="ShowCustomer" >
+					<table id="customers" border="1">
+						<thead>
+							<tr>
+								<th id="idHead">id</th>
+								<th id="nameHead">user name</th>
+
+
+							</tr>
+						<tbody>
+							<tr>
+								<td>{{ customer.id}}</td>
+								<td>{{ customer.custName}}</td>
+
+							</tr>
+						</tbody>
+					</table>
+			
+					<button type="button" class="btn btn-primary"
+						ng-click="showCoupons()">Show Coupons</button>
+				</div>
+				<div ng-show="listCoupons" ng-model="coupons">
+			
+								<table border="1">
+									<thead>
+										<tr>
+											<th id="idHead">id</th>
+											<th id="titleHead">title</th>
+											<th id="priceHead">price</th>
+			
+										</tr>
+									<tbody>
+										<tr ng-repeat="coupon in coupons">
+											<td>{{ coupon.id}}</td>
+											<td>{{ coupon.title}}</td>
+											<td>{{ coupon.price}}</td>
+			
+										</tr>
+									</tbody>
+								</table>
+			
+							</div>
+			</div>
+			
+				
+
+
+
+			<!-- UPD/DEL CUST -->
+			<div ng-show="UpdateCust">
+				<h4>If you want update customer by id {{id}} fill the fields (Password is mandatory):</h4>
+				UserName <input	type="text" ng-model="name" value={{customer.custName}}></input>
+				* Password<input type="text" ng-model="password" value={{customer.password}}></input>
+				<button type="button" class="btn btn-primary"
+					ng-click="updCustomer(id)">UPD</button>
+			</div>
+
+
+			<div ng-show="DeleteCust">
+				<h2>delete customer by id: {{id}}</h2>
+				<button type="button" class="btn btn-primary"ng-click="delCustomer()">DEL</button>
+			</div>
+
+			<!-- ADD COMP-->
+
+			<div class="col-md-9" ng-show="AddCompany">
+				<h1>Create Company</h1>
+				
+				<form class="createCliet">
+					<label>* Company Name </label>
+					<input class="field-Client" type="text" ng-model="name"></input><br />
+					<label>* Password </label>
+					<input class="field-Client"  type="text" ng-model="password"></input> <br />
+					<label>* Email </label>
+					<input class="field-Client"  type="email" ng-model="email"></input><br />
+				</form>
+				<button type="button" class="btn btn-primary"
+					ng-click="addCompany()">Add</button>
+			</div>
+
+			<!-- ADD CUST-->
+
+			<div class="col-md-9" ng-show="AddCustomer">
+				<h1>Create Customer</h1>
+				* Username<input type="text" ng-model="name"></input> <br /> * Password
+				<input type="text" ng-model="password"></input><br />
+
+				<button type="button" class="btn btn-primary"
+					ng-click="addCustomer()">Add</button>
+			</div>
+
+
+			<!-- row -->
+		</div>
+		<!-- /container -->
+
+	</div>
+	<footer style>
+		<p>&copy; EKL PROJECT 2016</p>
+	</footer>
+
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		window.jQuery
+				|| document
+						.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
+	</script>
+		<!-- Latest compiled and minified JavaScript -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+		crossorigin="anonymous"></script>
+</body>
+</html>
